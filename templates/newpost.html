@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block header %}
+  <h2 class="sub-title">new post</h2>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <label>
+      <div>Subject</div>
+      <input class="input-box" type="text" name="subject" value="{{subject}}">
+    </label>
+    <br>
+    <br>
+    <label>
+      <div>Text</div>
+      <textarea class="input-box" name="content">{{content}}</textarea>
+    </label>
+    <br>
+    <br>
+    <label>
+      <div>Author</div>
+      <input class="input-box" type="text" name="author" value="{{author}}">
+    </label>
+    <br>
+    <br>
+    <div class="error">{{error}}</div>
+    <br>
+    <input type="submit" value="Send">
+  </form>
+{% endblock %}

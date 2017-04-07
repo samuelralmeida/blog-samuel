@@ -1,0 +1,57 @@
+body {
+    position: relative;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    width: 800px;
+    margin: 0 auto;
+    padding: 10px;
+    color: #333;
+}
+
+html, body {
+  height: 100%;
+}
+
+.main-title {
+    display: block;
+    color: #005aa6;
+    font-size: 40px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 30px;
+    text-decoration: none;
+}
+
+.sub-title {
+    color: #ffffff;
+}
+
+#header{
+    background-color: #005aa6;
+    text-align: center;
+}
+
+.input-box {
+    width: 100%;
+}
+
+textarea {
+    height: 300px;
+}
+
+.post-heading {
+    display: flex;
+}
+
+.post-title {
+    width: 50%;
+}
+
+.post-date {
+    width: 50%;
+    text-align: right;
+}
+
+.endline {
+    color: #005aa6;
+}
