@@ -26,6 +26,19 @@ html, body {
     color: #ffffff;
 }
 
+.container{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.content-sign{
+    width: 50%;    
+}
+
+.content-login{
+    width: 50%;
+}
+
 #header{
     background-color: #005aa6;
     text-align: center;
