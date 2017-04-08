@@ -1,5 +1,22 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+	<div class="profile">
+		{% if init is divisibleby 2 %}
+			<a href="welcome">YOURS POSTS</a>
+			|
+			<a href="newpost">NEW POST</a>
+			|
+			<a href="logout">LOGOUT</a>
+		{% else %}
+			<a href="signup">SIGNUP</a>
+			|
+			<a href="login">LOGIN</a>
+		{% endif %}
+		<br>
+		<br>
+	</div>
+
   {{post.render() | safe}}
 {% endblock %}

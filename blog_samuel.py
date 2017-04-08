@@ -113,8 +113,10 @@ class NewPost(BlogHandler):
 
     def get(self):
         if self.user:
-            self.render('newpost.html')
+            init = 2
+            self.render('newpost.html', init=init)
         else:
+            init = 3
             self.redirect('/blog/signup')
 
     def post(self):
@@ -144,7 +146,11 @@ class PostPage(BlogHandler):
             self.error(404)
             return
 
-        self.render("permalink.html", post=post)
+        if self.user:
+            init = 2
+        else:
+            init = 3
+        self.render("permalink.html", post=post, init=init)
 
 
 class BlogFront(BlogHandler):
@@ -305,7 +311,7 @@ class Login(BlogHandler):
 
     def post(self):
         username = self.request.get('username')
-        password = self.request.get('passowrd')
+        password = self.request.get('password')
 
         # check if user is in database
         u = User.login(username, password)

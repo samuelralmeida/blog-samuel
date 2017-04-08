@@ -2,33 +2,45 @@
 
 {% block content %}
 
-    <h2>Login</h2>
+<div class="container">
+
+  <div class="content-1">
+    <h2 id="sub-header">Login</h2>   
     <form method="post">
       <table>
+
         <tr>
-          <td class="label">
-            Username
-          </td>
-          <td>
-            <input type="text" name="username" value="{{username}}">
-          </td>
+          <td class="label">Username</td>
+          <td><input type="text" name="username" value="{{username}}"></td>
         </tr>
 
         <tr>
-          <td class="label">
-            Password
-          </td>
-          <td>
-            <input type="password" name="password" value="">
-          </td>
+          <td class="label">Password</td>
+          <td><input type="password" name="password" value=""></td>
         </tr>
-      </table>
 
-      <div class="error">
-        {{error}}
-      </div>
+        <tr>
+          <td class="error">{{error}}</td>
+        </tr>
+      
+      </table> 
 
+      <br>
       <input type="submit">
+
     </form>
+  </div>
+
+  <div class="content-2">
+    <a href="signup">SIGNUP</a>
+  </div>
+
+
+</div>
+
+
+
+
+
 
 {% endblock %}

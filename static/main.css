@@ -29,6 +29,8 @@ html, body {
 
 .sub-title {
     color: #ffffff;
+    background-color: #005aa6;
+    text-align: center;
 }
 
 .container{
@@ -36,17 +38,18 @@ html, body {
     flex-wrap: wrap;
 }
 
-.content-sign{
-    width: 50%;    
-}
-
-.content-login{
+.content-1{
     width: 50%;
 }
-
-#header{
-    background-color: #005aa6;
+#sub-header {
     text-align: center;
+}
+
+.content-2{
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .input-box {
