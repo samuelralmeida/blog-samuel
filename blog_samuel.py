@@ -112,12 +112,15 @@ class Post(db.Model):
 class NewPost(BlogHandler):
 
     def get(self):
-        self.render('newpost.html')
+        if self.user:
+            self.render('newpost.html')
+        else:
+            self.redirect('/blog/signup')
 
     def post(self):
         subject = self.request.get('subject')
         content = self.request.get('content')
-        author = self.request.get('author')
+        author = self.user.name
 
         if subject and content and author:
             p = Post(parent=blog_key(), subject=subject,
@@ -133,6 +136,7 @@ class NewPost(BlogHandler):
 class PostPage(BlogHandler):
 
     def get(self, post_id):
+        # Key.from_path(*path, parent=None, namespace=None)
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(key)
 
@@ -146,8 +150,12 @@ class PostPage(BlogHandler):
 class BlogFront(BlogHandler):
 
     def get(self):
+        if self.user:
+            init = 2
+        else:
+            init = 3
         posts = Post.all().order('-created')
-        self.render('front.html', posts=posts)
+        self.render('front.html', posts=posts, init=init)
 
 
 # step2
@@ -287,7 +295,7 @@ class Register(Signup):
             u.put()
 
             self.login_cookie(u)
-            self.redirect('/blog')
+            self.redirect('/blog/welcome')
 
 
 class Login(BlogHandler):
@@ -303,7 +311,7 @@ class Login(BlogHandler):
         u = User.login(username, password)
         if u:
             self.login_cookie(u)
-            self.redirect('/blog')
+            self.redirect('/blog/welcome')
         else:
             msg = 'Invalid login'
             self.render('login-form.html', error=msg)
@@ -315,12 +323,31 @@ class Logout(BlogHandler):
         self.logout_cookie()
         self.redirect('/blog')
 
+
+class Welcome(BlogHandler):
+
+    def get(self):
+        if self.user:
+            self.render('welcome.html', username=self.user.name)
+        else:
+            self.redirect('/blog')
+
+"""
+class Tetse(BlogHandler):
+
+    def get(self):
+        x = db.Key.from_path('blogs', 'default')
+        self.render('teste.html', x=x)
+"""
+
 app = webapp2.WSGIApplication([('/', MainPage),
                                ('/blog/?', BlogFront),
                                ('/blog/([0-9]+)', PostPage),
                                ('/blog/newpost', NewPost),
                                ('/blog/signup', Register),
                                ('/blog/login', Login),
-                               ('/blog/logout', Logout)
+                               ('/blog/logout', Logout),
+                               ('/blog/welcome', Welcome),
+                               # ('/blog/teste', Tetse),
                                ],
                               debug=True)

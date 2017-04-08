@@ -2,9 +2,21 @@
 
 {% block content %}
 
-  {% for p in posts %}
-    {{ p.render() | safe }}
-    <br><br><br>
-  {% endfor %}
+	<div class="profile">
+		{% if init is divisibleby 2 %}
+			<a href="welcome">YOURS POSTS</a>
+			<a href="newpost">NEW POST</a>
+		{% else %}
+			<a href="signup">SIGNUP</a>
+			<a href="login">LOGIN</a>
+		{% endif %}
+		<br>
+		<br>
+	</div>
+
+	{% for p in posts %}
+		{{ p.render() | safe }}
+		<br><br><br>
+	{% endfor %}
 
 {% endblock %}

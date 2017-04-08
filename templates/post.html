@@ -11,6 +11,14 @@
 
   <hr>
 
+  <div class="post-author">
+    <span><b>Author: </b></span>{{p.author}}
+    <br>
+    <span><b>Last modified: </b></span>{{p.last_modified.strftime("%b %d, %Y")}}
+    <br>
+    <br>
+  </div>
+
   <div class="post-content">
     {{p._render_text | safe}}
   </div>

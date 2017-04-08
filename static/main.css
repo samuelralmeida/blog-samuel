@@ -22,6 +22,11 @@ html, body {
     text-decoration: none;
 }
 
+.profile {
+    width: 800px;
+    text-align: center;
+}
+
 .sub-title {
     color: #ffffff;
 }
