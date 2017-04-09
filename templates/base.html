@@ -11,6 +11,24 @@
 <body>
 	<a href="/blog" class="main-title">Toca e Passa</a>
 
+	<div class="profile">
+		{% if init is divisibleby 2 %}
+			<a href="/blog">HOME</a>
+			|
+			<a href="/blog/welcome">YOURS POSTS</a>
+			|
+			<a href="/blog/newpost">NEW POST</a>
+			|
+			<a href="/blog/logout">LOGOUT</a>
+		{% else %}
+			<a href="/blog/signup">SIGNUP</a>
+			|
+			<a href="/blog/login">LOGIN</a>
+		{% endif %}
+		<br>
+		<br>
+	</div>
+
 	<div id="header">
   		{% block header %}
   		{% endblock %}

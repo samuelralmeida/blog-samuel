@@ -1,12 +1,21 @@
 <div class="post">
   <div class="post-heading">
+    <div class="post-date">
+      {{p.created.strftime("%b %d, %Y")}}
+    </div>
+
     <div class="post-title">
       {{p.subject}}
     </div>
 
-    <div class="post-date">
-      {{p.created.strftime("%b %d, %Y")}}
+    <div class="post-options">
+    {{p._id}}
+      <form action="/blog/addlike/{{p._id}}">
+        <input type="submit" value="Like({{p.likes}})" name="like">| comment | modify | delete
+      </form>
+      
     </div>
+
   </div>
 
   <hr>

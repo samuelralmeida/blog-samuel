@@ -10,6 +10,7 @@ import hmac
 import re
 
 from google.appengine.ext import db
+from google.appengine.ext.db import polymodel
 from string import letters
 
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
@@ -95,16 +96,38 @@ def blog_key(name='default'):
 # post object
 
 
+def add_like(id_post):
+    p = Post.get_by_id(int(id_post))
+    p.likes += 1
+    p.put()
+
+
+class AddLike(BlogHandler):
+
+    def get(self, post_id):
+        if self.user:
+            key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+            post = db.get(key)
+            post.likes += 1
+            post.put()
+            self.redirect('/blog/')
+        else:
+            self.redirect('/blog/signup')
+
+
 class Post(db.Model):
     subject = db.StringProperty(required=True)
     content = db.TextProperty(required=True)
     author = db.StringProperty(required=True)
+    likes = db.IntegerProperty(required=True, default=0)
     created = db.DateTimeProperty(auto_now_add=True)
     last_modified = db.DateTimeProperty(auto_now=True)
 
     def render(self):
         self._render_text = self.content.replace('\n', '<br>')
+        self._id = self.key().id()
         return render_str("post.html", p=self)
+
 
 # create a new post to blog
 
@@ -248,7 +271,8 @@ def valid_email_input(email):
 class Signup(BlogHandler):
 
     def get(self):
-        self.render("signup-form.html")
+        init = 3
+        self.render("signup-form.html", init=init)
 
     def post(self):
         have_error = False
@@ -307,7 +331,8 @@ class Register(Signup):
 class Login(BlogHandler):
 
     def get(self):
-        self.render('login-form.html')
+        init = 3
+        self.render('login-form.html', init=init)
 
     def post(self):
         username = self.request.get('username')
@@ -334,9 +359,15 @@ class Welcome(BlogHandler):
 
     def get(self):
         if self.user:
-            self.render('welcome.html', username=self.user.name)
+            init = 2
+            author = self.user.name
+            author_posts = Post.all().filter('author =', author).order('-created')
+            self.render('welcome.html', username=author,
+                        init=init, author_posts=author_posts)
         else:
+            init = 3
             self.redirect('/blog')
+
 
 """
 class Tetse(BlogHandler):
@@ -354,6 +385,7 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/blog/login', Login),
                                ('/blog/logout', Logout),
                                ('/blog/welcome', Welcome),
+                               ('/blog/addlike/([0-9]+)', AddLike),
                                # ('/blog/teste', Tetse),
                                ],
                               debug=True)

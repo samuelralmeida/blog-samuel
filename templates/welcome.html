@@ -1,15 +1,16 @@
 {% extends "base.html" %}
 
+{% block header %}
+  <h2 class="sub-title">yours posts</h2>
+{% endblock %}
+
 {% block content %}
 	
-		<div class="profile">
-			<a href="welcome">YOURS POSTS</a>
-			|
-			<a href="newpost">NEW POST</a>
-			|
-			<a href="logout">LOGOUT</a>
-		</div>
-
     <h2>Welcome, {{username}}!</h2>
+
+    {% for p in author_posts %}
+		{{ p.render() | safe }}
+		<br><br><br>
+	{% endfor %}
 
 {% endblock %}
