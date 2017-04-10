@@ -154,8 +154,9 @@ class PostPage(BlogHandler):
             return
 
         if self.user:
+            username = self.user.name
             init = 2
-            self.render("permalink.html", post=post, init=init)
+            self.render("permalink.html", p=post, init=init, username=username)
         else:
             init = 3
             self.redirect('/blog/login')
@@ -166,8 +167,10 @@ class BlogFront(BlogHandler):
     def get(self):
         posts = Post.all().order('-created')
         if self.user:
+            username = self.user.name
             init = 2
-            self.render('front.html', posts=posts, init=init)
+            self.render('front.html', posts=posts,
+                        init=init, username=username)
         else:
             init = 3
             self.render('front.html', posts=posts, init=init)
@@ -367,28 +370,52 @@ class Like(BlogHandler):
             key = db.Key.from_path('Post', int(post_id), parent=blog_key())
             post = db.get(key)
             init = 2
+            username = self.user.name
             if not post:
                 self.error(404)
                 return
             else:
                 author = post.author
                 current_user = self.user.name
+                redirect = int(post_id)
                 if author == current_user:
-                    redirect = int(post_id)
                     msg = "You can't like your own post"
-                    self.render('permalink.html', post=post,
-                                init=init, msg=msg, redirect=redirect)
+                    self.render('permalink.html', p=post,
+                                init=init, msg=msg, redirect=redirect, username=username)
                 elif current_user in post.liked_by:
                     msg = "You've already liked"
-                    self.render('permalink.html', post=post,
-                                init=init, msg=msg)
+                    self.render('permalink.html', p=post,
+                                init=init, msg=msg, redirect=redirect, username=username)
                 else:
                     post.likes += 1
                     post.liked_by.append(current_user)
                     post.put()
                     msg = 'Liked'
-                    self.render("permalink.html", post=post,
-                                init=init, msg=msg)
+                    self.render("permalink.html", p=post,
+                                init=init, msg=msg, redirect=redirect, username=username)
+
+
+class Unlike(BlogHandler):
+
+    def get(self, post_id):
+        if not self.user:
+            self.redirect('/blog/login')
+        else:
+            key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+            post = db.get(key)
+            init = 2
+            if not post:
+                self.error(404)
+                return
+            else:
+                current_user = self.user.name
+                redirect = ''
+                post.likes -= 1
+                post.liked_by.remove(current_user)
+                post.put()
+                msg = 'Unliked'
+                self.render("permalink.html", p=post,
+                            init=init, msg=msg, redirect=redirect)
 
 
 """
@@ -408,6 +435,7 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/blog/logout', Logout),
                                ('/blog/welcome', Welcome),
                                ('/blog/like/([0-9]+)', Like),
+                               ('/blog/unlike/([0-9]+)', Unlike),
                                # ('/blog/teste', Tetse),
                                ],
                               debug=True)

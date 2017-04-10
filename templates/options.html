@@ -1,38 +1,13 @@
-<div class="post">
-  <div class="post-heading">
-    
-    <div class="post-title">
-      {{p.subject}}
-    </div>
-    
-    <div class="post-date">
-      {{p.created.strftime("%b %d, %Y")}}
-    </div>
-  </div>
-  
-  <hr style="width: 100%"> 
-  
-    <div class="post-content">
-      {{p._render_text | safe}}
-    </div>
-
-  <hr class="endline">
-
-  <div class="post-container">
-    <div class="post-author">
-      <span><b>Author: </b></span>{{p.author}}
-      <br>
-      <span><b>Last modified: </b></span>{{p.last_modified.strftime("%b %d, %Y")}}
-      <br>
-      <br>
-    </div>
-  
-<!---  <div class="post-options">
+<div class="post-options">
     
   <table id="options">
     <tr>
       <td>
-        <span class="option"><a href="/blog/like/{{p._id}}">Like({{p.likes}})</a></span>
+        {% if username in p.liked_by %}
+          <span class="option"><a href="/blog/unlike/{{p._id}}">Unike({{p.likes}})</a></span>
+        {% else %}
+          <span class="option"><a href="/blog/like/{{p._id}}">Like({{p.likes}})</a></span>
+        {% endif %}
       </td>
       
       <td>
@@ -62,4 +37,4 @@
 
   </div>
           
-</div>-->
+</div>

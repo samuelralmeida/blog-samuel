@@ -1,7 +1,12 @@
 {% extends "base.html" %}
 
 {% block header %}
-  <h2 class="sub-title">the post</h2>
+  {% if redirect is defined %}
+
+  {% else %}
+  	<h2 class="sub-title">the post</h2>
+  {% endif %}
+  
 {% endblock %}
 
 {% block content %}
@@ -10,13 +15,16 @@
 		<div class="msg">
 			<span class="msg">{{msg}}</span>
 			<br>
-			<span>You're redirecting to the post...</span>
+			<span>You're redirecting...</span>
 		</div>
 	{% endif %}
 
 	
 	<br>
 	<br>
-	{{post.render() | safe}}
+	{{p.render() | safe}}
+
+	<!-- This part of code above complete the part that is generated for render function -->
+	{% include "options.html" %}
 
 {% endblock %}
