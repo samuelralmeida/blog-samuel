@@ -1,35 +1,117 @@
 <div class="post">
   <div class="post-heading">
-    <div class="post-date">
-      {{p.created.strftime("%b %d, %Y")}}
-    </div>
-
+    
     <div class="post-title">
       {{p.subject}}
     </div>
-
-    <div class="post-options">
-    {{p._id}}
-      <form action="/blog/addlike/{{p._id}}">
-        <input type="submit" value="Like({{p.likes}})" name="like">| comment | modify | delete
-      </form>
-      
+    
+    <div class="post-date">
+      {{p.created.strftime("%b %d, %Y")}}
+    </div>
+  </div>
+  
+  <hr style="width: 100%"> 
+  
+    <div class="post-content">
+      {{p._render_text | safe}}
     </div>
 
+  <hr class="endline">
+
+  <div class="post-container">
+    <div class="post-author">
+      <span><b>Author: </b></span>{{p.author}}
+      <br>
+      <span><b>Last modified: </b></span>{{p.last_modified.strftime("%b %d, %Y")}}
+      <br>
+      <br>
+    </div>
+  
+  <div class="post-options">
+    
+  <table id="options">
+    <tr>
+      <td>
+        <span class="option"><a href="/blog/like/{{p._id}}">Like({{p.likes}})</a></span>
+      </td>
+      
+      <td>
+        <form method="post">
+          <input type="hidden" name="comment" value="{{p._id}}">
+          <input class="option" type="submit" value="Comment ()" name="like">
+        </form>
+      </td>
+      
+      <td>
+        <form method="post">
+          <input type="hidden" name="modify" value="{{p._id}}">
+          <input class="option" type="submit" value="Modify" name="like">
+        </form>
+      </td>
+      
+      <td>
+        <form method="post">
+          <input type="hidden" name="delete" value="{{p._id}}">
+          <input class="option" type="submit" value="Delete" name="like">
+        </form>
+      </td>
+    </tr>
+  </table>
+
   </div>
 
-  <hr>
-
-  <div class="post-author">
-    <span><b>Author: </b></span>{{p.author}}
-    <br>
-    <span><b>Last modified: </b></span>{{p.last_modified.strftime("%b %d, %Y")}}
-    <br>
-    <br>
   </div>
+          
+<!--
+    <div class="post-options">
+        
 
-  <div class="post-content">
-    {{p._render_text | safe}}
-  </div>
+
+
+      <div class="post-functions">
+        <table>
+          <tr>
+            <td>
+              <form method="post">
+                <input type="hidden" name="like" value="{{p._id}}">
+                <input class="option" type="submit" value="Like ({{p.likes}})">
+              </form>
+            </td>
+            <td class="error">{{p.like_error}}</td>
+          </tr>
+
+          <tr>
+            <td>
+              <form action="/blog/addlike/{{p._id}}">
+                <input class="option" type="submit" value="Comment ()" name="like">
+              </form>
+            </td>
+            <td class="error">{{error_comment}}</td>
+          </tr>
+
+          <tr>
+            <td>
+              <form action="/blog/addlike/{{p._id}}">
+                <input class="option" type="submit" value="Modify" name="like">
+              </form>
+            </td>
+            <td class="error">{{error_modify}}</td>
+          </tr>
+
+          <tr>
+            <td>
+              <form action="/blog/addlike/{{p._id}}">
+                <input class="option" type="submit" value="Delete" name="like">
+              </form>
+            </td>
+            <td class="error">{{error_delete}}</td>
+          </tr>
+        
+        </table>
+
+      </div>
+
+    </div>
+  -->
 
 </div>

@@ -4,6 +4,9 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 	<meta name="mobile-web-app-capable" content="yes">
+	{% if redirect is defined %}
+		<meta http-equiv="refresh" content="3;url=/blog/{{redirect}}">
+	{% endif %}
 	<title>Toca e Passa</title>
 	<link type="text/css" rel="stylesheet" href="/static/main.css">
 	<link rel="stylesheet" href="http://weloveiconfonts.com/api/?family=zocial">

@@ -5,5 +5,18 @@
 {% endblock %}
 
 {% block content %}
-  {{post.render() | safe}}
+
+	{% if msg is defined %}
+		<div class="msg">
+			<span class="msg">{{msg}}</span>
+			<br>
+			<span>You're redirecting to the post...</span>
+		</div>
+	{% endif %}
+
+	
+	<br>
+	<br>
+	{{post.render() | safe}}
+
 {% endblock %}
