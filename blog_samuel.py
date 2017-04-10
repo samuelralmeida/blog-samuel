@@ -103,6 +103,7 @@ class Post(db.Model):
     content = db.TextProperty(required=True)
     author = db.StringProperty(required=True)
     likes = db.IntegerProperty(required=True, default=0)
+    comments = db.IntegerProperty(required=True, default=0)
     liked_by = db.StringListProperty(default=[])
     created = db.DateTimeProperty(auto_now_add=True)
     last_modified = db.DateTimeProperty(auto_now=True)
@@ -124,7 +125,7 @@ class NewPost(BlogHandler):
             self.render('newpost.html', init=init)
         else:
             init = 3
-            self.redirect('/blog/signup')
+            self.redirect('/blog/login')
 
     def post(self):
         subject = self.request.get('subject')
@@ -443,13 +444,71 @@ class DeletePost(BlogHandler):
                     post.delete()
                     msg = "This post was deleted"
                     redirect = 'welcome'
-                    self.render("permalink.html", p=post,
-                                init=init, msg=msg, redirect=redirect, username=current_user)
+                    self.render("permalink.html", p=post, init=init,
+                                msg=msg, redirect=redirect, username=current_user)
                 else:
                     msg = "You can't delete a post by another user"
                     redirect = 'welcome'
-                    self.render("permalink.html", p=post,
-                                init=init, msg=msg, redirect=redirect, username=current_user)
+                    self.render("permalink.html", p=post, init=init,
+                                msg=msg, redirect=redirect, username=current_user)
+
+
+class EditPost(BlogHandler):
+
+    def get(self, post_id):
+        if not self.user:
+            self.redirect('/blog/login')
+        else:
+            key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+            post = db.get(key)
+            if not post:
+                self.error(404)
+                return
+            current_user = self.user.name
+            init = 2
+            if post.author == current_user:
+                subject = post.subject
+                content = post.content
+                self.render('editpost.html', subject=subject,
+                            content=content, init=init)
+            else:
+                msg = "You can't edit post to another user"
+                redirect = 'welcome'
+                self.render('permalink.html', p=post, init=init,
+                            msg=msg, redirect=redirect, username=current_user)
+
+    def post(self, post_id):
+        if not self.user:
+            return self.redirect('/login')
+        else:
+            subject = self.request.get('subject')
+            content = self.request.get('content')
+            if subject and content:
+                key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+                post = db.get(key)
+                if not post:
+                    self.error(404)
+                    return
+                current_user = self.user.name
+                init = 2
+                if post.author == current_user:
+                    post.content = content
+                    post.subject = subject
+                    post.put()
+                    self.redirect('/blog/%s' % str(post.key().id()))
+                else:
+                    msg = "You can't edit post to another user"
+                    redirect = 'welcome'
+                    self.render('permalink.html', p=post, init=init,
+                                msg=msg, redirect=redirect, username=current_user)
+            else:
+                error = "Sorry, but you must fill subject and content, please!"
+                self.render("editpost.html", subject=subject,
+                            content=content, error=error, init=2)
+
+
+class Comment(BlogHandler):
+    pass
 
 
 """
@@ -471,6 +530,7 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/blog/like/([0-9]+)', Like),
                                ('/blog/unlike/([0-9]+)', Unlike),
                                ('/blog/deletepost/([0-9]+)', DeletePost),
+                               ('/blog/editpost/([0-9]+)', EditPost),
                                # ('/blog/teste', Tetse),
                                ],
                               debug=True)

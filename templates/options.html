@@ -11,17 +11,11 @@
       </td>
 
       <td>
-        <form method="post">
-          <input type="hidden" name="comment" value="{{p._id}}">
-          <input class="option" type="submit" value="Comment ()" name="like">
-        </form>
+        <span class="option"><a href="/blog/comment/{{p._id}}">Comment({{p.comments}})</a></span>
       </td>
       
       <td>
-        <form method="post">
-          <input type="hidden" name="modify" value="{{p._id}}">
-          <input class="option" type="submit" value="Modify" name="like">
-        </form>
+        <span class="option"><a href="/blog/editpost/{{p._id}}">Edit post</a></span>
       </td>
       
       <td>
