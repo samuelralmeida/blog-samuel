@@ -137,9 +137,9 @@ class NewPost(BlogHandler):
             p.put()
             self.redirect('/blog/%s' % str(p.key().id()))
         else:
-            error = "subject and content and author, please!"
+            error = "Sorry, but you must fill subject and content, please!"
             self.render("newpost.html", subject=subject,
-                        content=content, error=error)
+                        content=content, error=error, init=2)
 
 
 class PostPage(BlogHandler):
@@ -409,13 +409,47 @@ class Unlike(BlogHandler):
                 return
             else:
                 current_user = self.user.name
-                redirect = ''
-                post.likes -= 1
-                post.liked_by.remove(current_user)
-                post.put()
-                msg = 'Unliked'
-                self.render("permalink.html", p=post,
-                            init=init, msg=msg, redirect=redirect)
+                if current_user in post.liked_by:
+                    redirect = ''
+                    post.likes -= 1
+                    post.liked_by.remove(current_user)
+                    post.put()
+                    msg = 'Unliked'
+                    self.render("permalink.html", p=post,
+                                init=init, msg=msg, redirect=redirect, username=current_user)
+                else:
+                    redirect = int(post_id)
+                    msg = "You can't unlike if you haven't liked yet"
+                    self.render("permalink.html", p=post,
+                                init=init, msg=msg, redirect=redirect, username=current_user)
+
+
+class DeletePost(BlogHandler):
+
+    def get(self, post_id):
+        if not self.user:
+            self.redirect('/blog/login')
+        else:
+            key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+            post = db.get(key)
+            init = 2
+            if not post:
+                self.error(404)
+                return
+            else:
+                current_user = self.user.name
+                author = post.author
+                if current_user == author:
+                    post.delete()
+                    msg = "This post was deleted"
+                    redirect = 'welcome'
+                    self.render("permalink.html", p=post,
+                                init=init, msg=msg, redirect=redirect, username=current_user)
+                else:
+                    msg = "You can't delete a post by another user"
+                    redirect = 'welcome'
+                    self.render("permalink.html", p=post,
+                                init=init, msg=msg, redirect=redirect, username=current_user)
 
 
 """
@@ -436,6 +470,7 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/blog/welcome', Welcome),
                                ('/blog/like/([0-9]+)', Like),
                                ('/blog/unlike/([0-9]+)', Unlike),
+                               ('/blog/deletepost/([0-9]+)', DeletePost),
                                # ('/blog/teste', Tetse),
                                ],
                               debug=True)

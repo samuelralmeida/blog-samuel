@@ -9,7 +9,7 @@
           <span class="option"><a href="/blog/like/{{p._id}}">Like({{p.likes}})</a></span>
         {% endif %}
       </td>
-      
+
       <td>
         <form method="post">
           <input type="hidden" name="comment" value="{{p._id}}">
@@ -25,10 +25,7 @@
       </td>
       
       <td>
-        <form method="post">
-          <input type="hidden" name="delete" value="{{p._id}}">
-          <input class="option" type="submit" value="Delete" name="like">
-        </form>
+        <span class="option"><a href="/blog/deletepost/{{p._id}}">Delete post</a></span>
       </td>
     </tr>
   </table>
