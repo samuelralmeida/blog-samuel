@@ -8,7 +8,7 @@ import random
 import hashlib
 import hmac
 import re
-import time
+from datetime import datetime
 
 from google.appengine.ext import db
 from string import letters
@@ -103,10 +103,12 @@ class Post(db.Model):
     content = db.TextProperty(required=True)
     author = db.StringProperty(required=True)
     likes = db.IntegerProperty(required=True, default=0)
-    comments = db.IntegerProperty(required=True, default=0)
+    num_comments = db.IntegerProperty(required=True, default=0)
     liked_by = db.StringListProperty(default=[])
     created = db.DateTimeProperty(auto_now_add=True)
-    last_modified = db.DateTimeProperty(auto_now=True)
+    # I can't use auto_now to last_modified because
+    # when some likes or comment was count the date changed too
+    last_modified = db.DateTimeProperty(required=False)
 
     def render(self):
         self._render_text = self.content.replace('\n', '<br>')
@@ -131,10 +133,11 @@ class NewPost(BlogHandler):
         subject = self.request.get('subject')
         content = self.request.get('content')
         author = self.user.name
+        last_modified = datetime.now()
 
-        if subject and content and author:
+        if subject and content:
             p = Post(parent=blog_key(), subject=subject,
-                     content=content, author=author)
+                     content=content, author=author, last_modified=last_modified)
             p.put()
             self.redirect('/blog/%s' % str(p.key().id()))
         else:
@@ -149,6 +152,8 @@ class PostPage(BlogHandler):
         # Key.from_path(*path, parent=None, namespace=None)
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(key)
+        comments_maked = Comment.all().filter(
+            'post_commented = ', key).order('-created_comment')
 
         if not post:
             self.error(404)
@@ -157,7 +162,8 @@ class PostPage(BlogHandler):
         if self.user:
             username = self.user.name
             init = 2
-            self.render("permalink.html", p=post, init=init, username=username)
+            self.render("permalink.html", p=post, init=init,
+                        username=username, comments_maked=comments_maked)
         else:
             init = 3
             self.redirect('/blog/login')
@@ -479,7 +485,7 @@ class EditPost(BlogHandler):
 
     def post(self, post_id):
         if not self.user:
-            return self.redirect('/login')
+            return self.redirect('/blog/login')
         else:
             subject = self.request.get('subject')
             content = self.request.get('content')
@@ -494,6 +500,7 @@ class EditPost(BlogHandler):
                 if post.author == current_user:
                     post.content = content
                     post.subject = subject
+                    post.last_modified = datetime.now()
                     post.put()
                     self.redirect('/blog/%s' % str(post.key().id()))
                 else:
@@ -507,8 +514,116 @@ class EditPost(BlogHandler):
                             content=content, error=error, init=2)
 
 
-class Comment(BlogHandler):
-    pass
+class Comment(db.Model):
+    comment = db.StringProperty(required=True)
+    author_comment = db.StringProperty(required=True)
+    created_comment = db.DateTimeProperty(auto_now_add=True)
+    post_commented = db.ReferenceProperty(Post, collection_name='comments')
+
+    def render(self):
+        self._render_text = self.comment.replace('\n', '<br>')
+        self._id = self.key().id()
+        return render_str("comment.html", c=self)
+
+
+class CommentPost(BlogHandler):
+
+    def get(self, post_id):
+        if not self.user:
+            self.redirect('/blog/login')
+        else:
+            key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+            post = db.get(key)
+            if not post:
+                self.error(404)
+                return
+            init = 2
+            self.render("newcomment.html", p=post, init=init)
+
+    def post(self, post_id):
+        if not self.user:
+            return self.redirect('/login')
+        else:
+            key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+            post = db.get(key)
+            init = 2
+            if not post:
+                self.error(404)
+                return
+            else:
+                comment = self.request.get('comment')
+                if comment:
+                    username = self.user.name
+                    c = Comment(comment=comment, author_comment=username,
+                                post_commented=key, parent=blog_key())
+                    c.put()
+                    post.num_comments += 1
+                    post.put()
+                    self.redirect('/blog/%s' % str(post_id))
+                else:
+                    error = 'Please, enter a comment'
+                    self.render('newcomment.html', init=init,
+                                error=error, p=post)
+
+
+"""
+    def get(self, post_id):
+        # Key.from_path(*path, parent=None, namespace=None)
+        key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+        post = db.get(key)
+
+        if not post:
+            self.error(404)
+            return
+
+        if self.user:
+            username = self.user.name
+            init = 2
+            self.render("permalink.html", p=post, init=init, username=username)
+        else:
+            init = 3
+            self.redirect('/blog/login')
+
+    class newComment(BlogHandler):
+        def get(self, post_id):
+            if not self.user:
+                return self.redirect('/login')
+            else:
+                    key = db.Key.from_path('Post', int(post_id),
+                                           parent=blog_key())
+                    post = db.get(key)
+                    if not post:
+                        self.error(404)
+                        return
+                    else:
+                        subject = post.subject
+                        content = post.content
+                        self.render("newcomment.html", subject=subject,
+                                    content=content)
+
+        def post(self, post_id):
+            if not self.user:
+                return self.redirect('/login')
+            else:
+                    key = db.Key.from_path('Post', int(post_id),
+                                           parent=blog_key())
+                    post = db.get(key)
+                    if not post:
+                        self.error(404)
+                        return
+                    else:
+                        comment = self.request.get('comment')
+                        if comment:
+                            U = User.by_name(self.user.name)
+                            c = Comment(comment=comment, cAuthor=U.name,
+                                        post=key, parent=blog_key())
+                            c.put()
+                            self.redirect('/blog/%s' % str(post_id))
+                        else:
+                                error = "please enter a comment"
+                                self.render("newcomment.html", comment=comment,
+                                            error=error)
+"""
 
 
 """
@@ -531,6 +646,7 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/blog/unlike/([0-9]+)', Unlike),
                                ('/blog/deletepost/([0-9]+)', DeletePost),
                                ('/blog/editpost/([0-9]+)', EditPost),
+                               ('/blog/comment/([0-9]+)', CommentPost),
                                # ('/blog/teste', Tetse),
                                ],
                               debug=True)
