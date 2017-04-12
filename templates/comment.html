@@ -1,9 +1,14 @@
 <div class="comment">
-    <span><b>Author: </b></span>{{c.author_comment}}
-    <br>
-    <span><b>Date: </b></span>{{c.created_comment.strftime("%b %d, %Y")}}
-    <br>
-    <span><b>Comment: </b></span>
-    <br>
+	<div class="heading">
+		<div class="title">
+			<b>Author: </b></span>{{c.author_comment}}
+		</div>
+    	<div class="date">
+      		{{c.created_comment.strftime("%b %d, %Y")}}
+    	</div>
+  	</div>
+    <hr style="width: 100%"> 
     {{c._render_text | safe}}
+    <br>
+    <hr class="endline">
 </div>

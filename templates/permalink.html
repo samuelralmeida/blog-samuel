@@ -24,14 +24,19 @@
 	{{p.render() | safe}}
 
 	<!-- This part of code above complete the part that is generated for render function -->
-	{% include "options-post.html" %}
-
+	{% if msg is defined %}
+		</div>
+    	</div>
+	{% else %}
+		{% include "options-post.html" %}
+	{% endif %}
+	
 	{% if comments_maked is defined %}
-		<h2>Comments</h2>
+		<h2 style="text-align: center">Comments</h2>
 		{% for c in comments_maked %}
 			{{ c.render() | safe }}
 			{% include "options-comment.html" %}
-			<br><br><br>
+			<br>
 		{% endfor %}
 	{% endif %}
 

@@ -1,4 +1,4 @@
-body {
+/*body {original
     position: relative;
     font-family: Helvetica, Arial, sans-serif;
     font-size: 14px;
@@ -6,10 +6,22 @@ body {
     margin: 0 auto;
     padding: 10px;
     color: #333;
+}*/
+
+body {
+    position: relative; 
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    margin-right: 15%;
+    margin-left: 15%;
+    /*padding: 10px;*/
+    color: #333;
+    font-family: Helvetica, Arial, sans-serif;
 }
 
 html, body {
-  height: 100%;
+    height: 100%;
 }
 
 .main-title {
@@ -23,7 +35,8 @@ html, body {
 }
 
 .profile {
-    width: 800px;
+    /*width: 800px;*/
+    width: 100%;
     text-align: center;
 }
 
@@ -60,7 +73,7 @@ textarea {
     height: 300px;
 }
 
-.post-heading {
+.heading {
     display: flex;
     width: 100%
 }
@@ -80,16 +93,18 @@ textarea {
     width: 100%;
 }
 
-.post-title {
+.title {
     width: 50%;
 }
 
-.post-date {
+.date {
     width: 50%;
     text-align: right;
 }
 
 .post-options {
+    display: fluid;
+    flex-wrap: wrap;
     width: 50%;
     text-align: right;
 }
@@ -102,18 +117,11 @@ textarea {
     color: #005aa6;
 }
 
-.option {
-    padding:5px 15px; 
-    background:#ccc; 
+.opt-send {
     border:0 none;
     cursor:pointer;
     -webkit-border-radius: 5px;
-    border-radius: 5px; 
-}
-
-#options {
-    margin-right: 0px;
-    margin-left: auto;
+    border-radius: 5px;
 }
 
 .msg {
@@ -121,3 +129,21 @@ textarea {
     text-align: center;
     color: orange;
 }
+
+
+a.opt:link, a.opt:visited, a.option:active {
+    text-decoration: none;
+    color: black;
+    }
+
+a.opt:hover {
+    text-decoration: underline; 
+    color: black;
+    }
+
+/*
+a:link........define o estilo do link no estado inicial;
+a:visited...define o estilo do link visitado;
+a:hover.....define o estilo do link quando passa-se o mouse sobre ele;
+a:active....define o estilo do link ativo (o que foi "clicado").
+*/

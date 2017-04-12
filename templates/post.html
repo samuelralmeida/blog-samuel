@@ -1,11 +1,11 @@
 <div class="post">
-  <div class="post-heading">
+  <div class="heading">
     
-    <div class="post-title">
-      <span><a href="/blog/{{p._id}}">{{p.subject}}</a></span> 
+    <div class="title">
+      <a class="opt" href="/blog/{{p._id}}">{{p.subject}}</a>
     </div>
     
-    <div class="post-date">
+    <div class="date">
       {{p.created.strftime("%b %d, %Y")}}
     </div>
   </div>
@@ -26,40 +26,3 @@
       <br>
       <br>
     </div>
-  
-<!---  <div class="post-options">
-    
-  <table id="options">
-    <tr>
-      <td>
-        <span class="option"><a href="/blog/like/{{p._id}}">Like({{p.likes}})</a></span>
-      </td>
-      
-      <td>
-        <form method="post">
-          <input type="hidden" name="comment" value="{{p._id}}">
-          <input class="option" type="submit" value="Comment ()" name="like">
-        </form>
-      </td>
-      
-      <td>
-        <form method="post">
-          <input type="hidden" name="modify" value="{{p._id}}">
-          <input class="option" type="submit" value="Modify" name="like">
-        </form>
-      </td>
-      
-      <td>
-        <form method="post">
-          <input type="hidden" name="delete" value="{{p._id}}">
-          <input class="option" type="submit" value="Delete" name="like">
-        </form>
-      </td>
-    </tr>
-  </table>
-
-  </div>
-
-  </div>
-          
-</div>-->

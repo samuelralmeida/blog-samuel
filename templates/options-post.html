@@ -1,31 +1,27 @@
 <div class="post-options">
     
-  <table id="options">
-    <tr>
-      <td>
-        {% if username in p.liked_by %}
-          <span class="option"><a href="/blog/unlike/{{p._id}}">Unike({{p.likes}})</a></span>
-        {% else %}
-          <span class="option"><a href="/blog/like/{{p._id}}">Like({{p.likes}})</a></span>
-        {% endif %}
-      </td>
-
-      <td>
-        <span class="option"><a href="/blog/comment/{{p._id}}">Comment({{p.num_comments}})</a></span>
-      </td>
-      
-      <td>
-        <span class="option"><a href="/blog/editpost/{{p._id}}">Edit post</a></span>
-      </td>
-      
-      <td>
-        <span class="option"><a href="/blog/deletepost/{{p._id}}">Delete post</a></span>
-      </td>
-    </tr>
-  </table>
-
+  <div class="option">
+  {% if username in p.liked_by %}
+    <a class="opt" href="/blog/unlike/{{p._id}}">Unike ({{p.likes}})</a>
+  {% else %}
+    <a class="opt" href="/blog/like/{{p._id}}">Like ({{p.likes}})</a>
+  {% endif %}
+  </div>
+  
+  <div class="option">
+    <a class="opt" href="/blog/comment/{{p._id}}">Comment ({{p.num_comments}})</a>
+  </div>
+  
+  <div class="option">
+    <a class="opt" href="/blog/editpost/{{p._id}}">Edit post</a>
   </div>
 
+  <div class="option">
+    <a class="opt" href="/blog/deletepost/{{p._id}}">Delete post</a>
   </div>
+  
+</div>
+
+</div>
           
 </div>
