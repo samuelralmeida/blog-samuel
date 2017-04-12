@@ -8,7 +8,7 @@ import random
 import hashlib
 import hmac
 import re
-import time
+from datetime import datetime
 
 from google.appengine.ext import db
 from string import letters
@@ -103,10 +103,10 @@ class Post(db.Model):
     content = db.TextProperty(required=True)
     author = db.StringProperty(required=True)
     likes = db.IntegerProperty(required=True, default=0)
-    comments = db.IntegerProperty(required=True, default=0)
+    num_comments = db.IntegerProperty(required=True, default=0)
     liked_by = db.StringListProperty(default=[])
     created = db.DateTimeProperty(auto_now_add=True)
-    last_modified = db.DateTimeProperty(auto_now=True)
+    last_modified = db.DateTimeProperty()
 
     def render(self):
         self._render_text = self.content.replace('\n', '<br>')
@@ -131,10 +131,11 @@ class NewPost(BlogHandler):
         subject = self.request.get('subject')
         content = self.request.get('content')
         author = self.user.name
+        last_modified = datetime.now()
 
         if subject and content and author:
             p = Post(parent=blog_key(), subject=subject,
-                     content=content, author=author)
+                     content=content, author=author, last_modified=last_modified)
             p.put()
             self.redirect('/blog/%s' % str(p.key().id()))
         else:
@@ -494,6 +495,7 @@ class EditPost(BlogHandler):
                 if post.author == current_user:
                     post.content = content
                     post.subject = subject
+                    post.last_modified = datetime.now()
                     post.put()
                     self.redirect('/blog/%s' % str(post.key().id()))
                 else:
