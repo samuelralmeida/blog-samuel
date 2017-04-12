@@ -18,7 +18,7 @@ jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
                                autoescape=True)
 
 # rewrite secret word
-secret = 'sras'
+secret = 'sars'
 
 
 def render_str(template, **params):
