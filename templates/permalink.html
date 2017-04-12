@@ -24,12 +24,13 @@
 	{{p.render() | safe}}
 
 	<!-- This part of code above complete the part that is generated for render function -->
-	{% include "options.html" %}
+	{% include "options-post.html" %}
 
 	{% if comments_maked is defined %}
 		<h2>Comments</h2>
 		{% for c in comments_maked %}
 			{{ c.render() | safe }}
+			{% include "options-comment.html" %}
 			<br><br><br>
 		{% endfor %}
 	{% endif %}

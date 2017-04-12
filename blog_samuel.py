@@ -566,63 +566,63 @@ class CommentPost(BlogHandler):
                                 error=error, p=post)
 
 
+class DeleteComment(BlogHandler):
+
+    def get(self, post_id, comment_id):
+        if not self.user:
+            self.redirect('/blog/login')
+        else:
+            key_post = key = db.Key.from_path(
+                'Post', int(post_id), parent=blog_key())
+            post = db.get(key_post)
+            key_comment = db.Key.from_path(
+                'Comment', int(comment_id), parent=blog_key())
+            comment = db.get(key_comment)
+            init = 2
+            if not post:
+                self.error(404)
+                return
+            else:
+                current_user = self.user.name
+                author = comment.author_comment
+                if current_user == author:
+                    comment.delete()
+                    msg = "This comment was deleted"
+                    redirect = 'welcome'
+                    self.render("permalink.html", p=post, init=init,
+                                msg=msg, redirect=redirect, username=current_user)
+                else:
+                    msg = "You can't delete a comment by another user"
+                    redirect = 'welcome'
+                    self.render("permalink.html", p=post, init=init,
+                                msg=msg, redirect=redirect, username=current_user)
+
+
 """
     def get(self, post_id):
-        # Key.from_path(*path, parent=None, namespace=None)
-        key = db.Key.from_path('Post', int(post_id), parent=blog_key())
-        post = db.get(key)
-
-        if not post:
-            self.error(404)
-            return
-
-        if self.user:
-            username = self.user.name
-            init = 2
-            self.render("permalink.html", p=post, init=init, username=username)
-        else:
-            init = 3
+        if not self.user:
             self.redirect('/blog/login')
-
-    class newComment(BlogHandler):
-        def get(self, post_id):
-            if not self.user:
-                return self.redirect('/login')
+        else:
+            key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+            post = db.get(key)
+            init = 2
+            if not post:
+                self.error(404)
+                return
             else:
-                    key = db.Key.from_path('Post', int(post_id),
-                                           parent=blog_key())
-                    post = db.get(key)
-                    if not post:
-                        self.error(404)
-                        return
-                    else:
-                        subject = post.subject
-                        content = post.content
-                        self.render("newcomment.html", subject=subject,
-                                    content=content)
-
-        def post(self, post_id):
-            if not self.user:
-                return self.redirect('/login')
-            else:
-                    key = db.Key.from_path('Post', int(post_id),
-                                           parent=blog_key())
-                    post = db.get(key)
-                    if not post:
-                        self.error(404)
-                        return
-                    else:
-                        comment = self.request.get('comment')
-                        if comment:
-                            U = User.by_name(self.user.name)
-                            c = Comment(comment=comment, cAuthor=U.name,
-                                        post=key, parent=blog_key())
-                            c.put()
-                            self.redirect('/blog/%s' % str(post_id))
-                        else:
-                                error = "please enter a comment"
-                                self.render("newcomment.html", comment=comment,
-                                            error=error)
+                current_user = self.user.name
+                author = post.author
+                if current_user == author:
+                    post.delete()
+                    msg = "This post was deleted"
+                    redirect = 'welcome'
+                    self.render("permalink.html", p=post, init=init,
+                                msg=msg, redirect=redirect, username=current_user)
+                else:
+                    msg = "You can't delete a post by another user"
+                    redirect = 'welcome'
+                    self.render("permalink.html", p=post, init=init,
+                                msg=msg, redirect=redirect, username=current_user)
 """
 
 
@@ -647,6 +647,8 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/blog/deletepost/([0-9]+)', DeletePost),
                                ('/blog/editpost/([0-9]+)', EditPost),
                                ('/blog/comment/([0-9]+)', CommentPost),
+                               ('/blog/deletecomment/([0-9]+)/([0-9]+)',
+                                DeleteComment),
                                # ('/blog/teste', Tetse),
                                ],
                               debug=True)
