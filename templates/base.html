@@ -7,15 +7,15 @@
 	{% if redirect is defined %}
 		<meta http-equiv="refresh" content="3;url=/blog/{{redirect}}">
 	{% endif %}
-	<title>Toca e Passa</title>
+	<title>Writting about nothing</title>
 	<link type="text/css" rel="stylesheet" href="/static/main.css">
 	<link rel="stylesheet" href="http://weloveiconfonts.com/api/?family=zocial">
 </head>
 <body>
-	<a href="/blog" class="main-title">Toca e Passa</a>
+	<a href="/blog" class="main-title">Writting about nothing</a>
 
 	<div class="profile">
-		{% if init is divisibleby 2 %}
+		{% if logged is defined %}
 			<a href="/blog">HOME</a>
 			|
 			<a href="/blog/welcome">YOURS POSTS</a>
