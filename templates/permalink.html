@@ -16,6 +16,8 @@
 			<span class="msg">{{msg}}</span>
 			<br>
 			<span>You're redirecting...</span>
+			<br>
+			<br>
 		</div>
 	{% endif %}
 
@@ -23,5 +25,15 @@
 
 	<!-- This part of code above complete the part that is generated for render function -->
 	{% include "options.html" %}
+
+	{% if comments_maked is defined %}
+		<h2>Comments</h2>
+		{% for c in comments_maked %}
+			{{ c.render() | safe }}
+			<br><br><br>
+		{% endfor %}
+	{% endif %}
+
+
 
 {% endblock %}

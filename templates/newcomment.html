@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block header %}
+  {% if redirect is defined %}
+
+  {% else %}
+  	<h2 class="sub-title">comment the post</h2>
+  {% endif %}
+  
+{% endblock %}
+
+{% block content %}
+
+	{{p.render() | safe}}
+
+	 </div>   
+</div>
+
+<div class="comment-area">
+	<form method="post">
+	    <label>
+	      <div>Comment</div>
+	      <textarea class="input-box" name="comment">{{comment}}</textarea>
+	    </label>
+	    <br>
+	    <div class="error">{{error}}</div>
+	    <br>
+	    <input class="option" type="submit" value="Send">
+  	</form>
+</div>
+
+{% endblock %}
