@@ -2,6 +2,9 @@
 
 {% block content %}
 
-    <h2>Welcome, {{x}}!</h2>
+    {% for c in x  %}
+    	{{c}}
+    {% endfor %}
+
 
 {% endblock %}

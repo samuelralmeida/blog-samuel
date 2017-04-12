@@ -449,6 +449,8 @@ class DeletePost(BlogHandler):
                 current_user = self.user.name
                 author = post.author
                 if current_user == author:
+                    db.delete(Comment.all(keys_only=True).filter(
+                        'post_commented = ', key))
                     post.delete()
                     msg = "This post was deleted"
                     redirect = 'welcome'
@@ -663,69 +665,14 @@ class EditComment(BlogHandler):
                             comment=content_comment, error=error, init=2)
 
 
-"""
-class EditPost(BlogHandler):
+class Teste(BlogHandler):
 
-    def post(self, post_id):
-        if not self.user:
-            return self.redirect('/blog/login')
-        else:
-            subject = self.request.get('subject')
-            content = self.request.get('content')
-            if subject and content:
-                key = db.Key.from_path('Post', int(post_id), parent=blog_key())
-                post = db.get(key)
-                if not post:
-                    self.error(404)
-                    return
-                current_user = self.user.name
-                init = 2
-                if post.author == current_user:
-                    post.content = content
-                    post.subject = subject
-                    post.last_modified = datetime.now()
-                    post.put()
-                    self.redirect('/blog/%s' % str(post.key().id()))
-                else:
-                    msg = "You can't edit post to another user"
-                    redirect = 'welcome'
-                    self.render('permalink.html', p=post, init=init,
-                                msg=msg, redirect=redirect, username=current_user)
-            else:
-                error = "Sorry, but you must fill subject and content, please!"
-                self.render("editpost.html", subject=subject,
-                            content=content, error=error, init=2)
-def get(self, post_id):
-        if not self.user:
-            self.redirect('/blog/login')
-        else:
-            key = db.Key.from_path('Post', int(post_id), parent=blog_key())
-            post = db.get(key)
-            if not post:
-                self.error(404)
-                return
-            current_user = self.user.name
-            init = 2
-            if post.author == current_user:
-                subject = post.subject
-                content = post.content
-                self.render('editpost.html', subject=subject,
-                            content=content, init=init)
-            else:
-                msg = "You can't edit post to another user"
-                redirect = 'welcome'
-                self.render('permalink.html', p=post, init=init,
-                            msg=msg, redirect=redirect, username=current_user)
-"""
+    def get(self, post_id):
+        init = 2
+        key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+        post_comments = Comment.all().filter('post_commented = ', key)
+        self.render('teste.html', x=post_comments, init=2)
 
-
-"""
-class Tetse(BlogHandler):
-
-    def get(self):
-        x = db.Key.from_path('blogs', 'default')
-        self.render('teste.html', x=x)
-"""
 
 app = webapp2.WSGIApplication([('/', MainPage),
                                ('/blog/?', BlogFront),
@@ -744,6 +691,6 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                 DeleteComment),
                                ('/blog/editcomment/([0-9]+)/([0-9]+)',
                                 EditComment),
-                               # ('/blog/teste', Tetse),
+                               ('/blog/teste/([0-9]+)', Teste),
                                ],
                               debug=True)
