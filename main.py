@@ -98,7 +98,8 @@ class Post(db.Model):
     subject = db.StringProperty(required=True)
     content = db.TextProperty(required=True)
     author = db.StringProperty(required=True)
-    likes = db.IntegerProperty(required=True, default=0)
+    # When a try to use ReferencePoperty, I get a HTTP error 500
+    # author = db.ReferenceProperty(User, collection_name='user_author')
     num_comments = db.IntegerProperty(required=True, default=0)
     liked_by = db.StringListProperty(default=[])
     created = db.DateTimeProperty(auto_now_add=True)
@@ -111,6 +112,9 @@ class Post(db.Model):
         self._id = self.key().id()
         return render_str("post.html", p=self)
 
+    @property
+    def likes(self):
+        return len(self.liked_by)
 
 # create a new post to blog
 
@@ -158,7 +162,8 @@ class PostPage(BlogHandler):
             return
 
         if self.user:
-            self.render("permalink.html", p=post,
+            current_user = self.user.name
+            self.render("permalink.html", p=post, username=current_user,
                         comments_maked=comments_maked, logged=True)
         else:
             self.redirect('/blog/login')
@@ -169,7 +174,9 @@ class BlogFront(BlogHandler):
     def get(self):
         posts = Post.all().order('-created')
         if self.user:
-            self.render('front.html', posts=posts, logged=True)
+            current_user = self.user.name
+            self.render('front.html', posts=posts,
+                        logged=True, username=current_user)
         else:
             self.render('front.html', posts=posts)
 
@@ -361,7 +368,6 @@ class Like(BlogHandler):
         else:
             key = db.Key.from_path('Post', int(post_id), parent=blog_key())
             post = db.get(key)
-            username = self.user.name
             if not post:
                 self.error(404)
                 return
@@ -372,18 +378,17 @@ class Like(BlogHandler):
                 if author == current_user:
                     msg = "You can't like your own post"
                     self.render('permalink.html', p=post,
-                                logged=True, msg=msg, redirect=redirect, username=username)
+                                logged=True, msg=msg, redirect=redirect, username=current_user)
                 elif current_user in post.liked_by:
                     msg = "You've already liked"
                     self.render('permalink.html', p=post,
-                                logged=True, msg=msg, redirect=redirect, username=username)
+                                logged=True, msg=msg, redirect=redirect, username=current_user)
                 else:
-                    post.likes += 1
                     post.liked_by.append(current_user)
                     post.put()
                     msg = 'Liked'
                     self.render("permalink.html", p=post,
-                                logged=True, msg=msg, redirect=redirect, username=username)
+                                logged=True, msg=msg, redirect=redirect, username=current_user)
 
 
 class Unlike(BlogHandler):
@@ -401,7 +406,6 @@ class Unlike(BlogHandler):
                 current_user = self.user.name
                 if current_user in post.liked_by:
                     redirect = ''
-                    post.likes -= 1
                     post.liked_by.remove(current_user)
                     post.put()
                     msg = 'Unliked'
@@ -524,7 +528,7 @@ class CommentPost(BlogHandler):
 
     def post(self, post_id):
         if not self.user:
-            return self.redirect('/login')
+            return self.redirect('/blog/login')
         else:
             key = db.Key.from_path('Post', int(post_id), parent=blog_key())
             post = db.get(key)
