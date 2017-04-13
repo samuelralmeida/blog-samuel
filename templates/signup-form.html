@@ -9,35 +9,36 @@
     </div>
 
     <form method="post">
-      <table>
-        
-        <tr>
-          <td class="label">Username</td>
-          <td><input type="text" name="username" value="{{username}}"></td>
-          <td class="error">{{error_username}}</td>
-        </tr>
-
-        <tr>
-          <td class="label">Password</td>
-          <td><input type="password" name="password" value=""></td>
-          <td class="error">{{error_password}}</td>
-        </tr>
-
-        <tr>
-          <td class="label">Verify Password</td>
-          <td><input type="password" name="verify" value=""></td>
-          <td class="error">{{error_verify}}</td>
-        </tr>
-
-        <tr>
-          <td class="label">Email (optional)</td>
-          <td><input type="text" name="email" value="{{email}}"></td>
-          <td class="error">{{error_email}}</td>
-        </tr>
       
-      </table>
+      <div>
+        <label>Username</label><br>
+        <input type="text" name="username" value="{{username}}">
+        <span class="error">{{error_username}}</span>
+      </div>
+
+      <div>
+        <br>
+        <label>Password</label><br>
+        <input type="password" name="password" value="">
+        <span class="error">{{error_password}}</span>
+      </div>
+
+      <div>
+        <br>
+        <label>Verify password</label><br>
+        <input type="password" name="verify" value="">
+        <span class="error">{{error_verify}}</span>
+      </div>
+
+      <div>
+        <br>
+        <label>Email (optional)</label><br>
+        <input type="text" name="email" value="{{email}}">
+        <span class="error">{{error_email}}</span>
+      </div>
 
       <br>
+
       <input type="submit">
 
     </form>

@@ -130,7 +130,6 @@ textarea {
     color: orange;
 }
 
-
 a.opt:link, a.opt:visited, a.option:active {
     text-decoration: none;
     color: black;
@@ -140,10 +139,3 @@ a.opt:hover {
     text-decoration: underline; 
     color: black;
     }
-
-/*
-a:link........define o estilo do link no estado inicial;
-a:visited...define o estilo do link visitado;
-a:hover.....define o estilo do link quando passa-se o mouse sobre ele;
-a:active....define o estilo do link ativo (o que foi "clicado").
-*/

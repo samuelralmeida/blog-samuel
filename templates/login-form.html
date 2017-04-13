@@ -9,34 +9,27 @@
     </div>
 
     <form method="post">
-      <table>
-
-        <tr>
-          <td class="label">Username</td>
-          <td><input type="text" name="username" value="{{username}}"></td>
-        </tr>
-
-        <tr>
-          <td class="label">Password</td>
-          <td><input type="password" name="password" value=""></td>
-        </tr>
-
-        <tr>
-          <td class="error">{{error}}</td>
-        </tr>
       
-      </table> 
+      <div>
+        <label>Username</label><br>
+        <input type="text" name="username" value="{{username}}">
+      </div>
 
-      <br>
+      <div>
+        <br>
+        <label>Password</label><br>
+        <input type="password" name="password" value="">
+      </div>
+
+      <div>
+        <br>
+        <span class="error">{{error}}</span>
+      </div>
+
       <input type="submit">
 
     </form>
 
 </div>
-
-
-
-
-
 
 {% endblock %}

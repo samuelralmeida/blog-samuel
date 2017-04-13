@@ -125,20 +125,23 @@ class NewPost(BlogHandler):
             self.redirect('/blog/login')
 
     def post(self):
-        subject = self.request.get('subject')
-        content = self.request.get('content')
-        author = self.user.name
-        last_modified = datetime.now()
-
-        if subject and content:
-            p = Post(parent=blog_key(), subject=subject,
-                     content=content, author=author, last_modified=last_modified)
-            p.put()
-            self.redirect('/blog/%s' % str(p.key().id()))
+        if not self.user:
+            self.redirect('/blog/login')
         else:
-            error = "Sorry, but you must fill subject and content, please!"
-            self.render("newpost.html", subject=subject,
-                        content=content, error=error, logged=True)
+            subject = self.request.get('subject')
+            content = self.request.get('content')
+            author = self.user.name
+            last_modified = datetime.now()
+
+            if subject and content:
+                p = Post(parent=blog_key(), subject=subject,
+                         content=content, author=author, last_modified=last_modified)
+                p.put()
+                self.redirect('/blog/%s' % str(p.key().id()))
+            else:
+                error = "Sorry, but you must fill subject and content, please!"
+                self.render("newpost.html", subject=subject,
+                            content=content, error=error, logged=True)
 
 
 class PostPage(BlogHandler):
@@ -556,7 +559,7 @@ class DeleteComment(BlogHandler):
             key_comment = db.Key.from_path(
                 'Comment', int(comment_id), parent=blog_key())
             comment = db.get(key_comment)
-            if not post:
+            if not comment:
                 self.error(404)
                 return
             else:
@@ -589,7 +592,7 @@ class EditComment(BlogHandler):
             key_comment = db.Key.from_path(
                 'Comment', int(comment_id), parent=blog_key())
             comment = db.get(key_comment)
-            if not post:
+            if not comment:
                 self.error(404)
                 return
             else:
